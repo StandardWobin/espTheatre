@@ -1,6 +1,6 @@
 # Arduino and ESP32 Codes for ArtNet-based LED, DMX, and SBUS Control to be used stage shows
 
-This repository contains the codes for controlling LED, DMX, and SBUS devices using Arduino and ESP32 microcontrollers. The devices are controlled using ArtNet protocol for receiving information and sending the control signals. These Codes are just interfaces between existing libraries
+This repository contains the codes for controlling LED, DMX, and SBUS devices using Arduino and ESP32 microcontrollers. The devices are controlled using ArtNet protocol for receiving information and sending the control signals. These Codes are just interfaces between existing libraries. Thus, in stage production, many devices can be operated with very inexpensive home-built hardware. Of course, all applicable safety regulations must be observed. An extensive safety check is required before use. License is MIT
 
 
 ## Acknowledgements to the libraries used
