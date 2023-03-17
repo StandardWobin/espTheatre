@@ -11,26 +11,21 @@ int transmitPin = 17;
 int receivePin = 16;
 int enablePin = 21;
 dmx_port_t dmxPort = 1;
-byte datadmx[DMX_MAX_PACKET_SIZE];
+uint8_t datadmx[DMX_MAX_PACKET_SIZE] = {0};
 int packetCounter = 44;
 byte incrementValue = 0;
 
 
-const char* ssid = "agj";
-const char* password = "kreuzzugang!";
-
-
-//Wifi settings
-// const char* ssid = "MagentaWLAN-TTX9";
-// const char* password = "61986585827922876861";
-
-// const char* ssid = "FRITZ!Box Fon WLAN 7390";
-// const char* password = "3223026829687110";
+const char* ssid = "haensse.dev";
+const char* password = "bitteddosdasnicht420";
 
 
 
 WiFiUDP UdpSend;
 ArtnetWifi artnet;
+
+
+bool debug = true;
 
 // connect to wifi – returns true if successful or false if not
 bool ConnectWifi(void) 
@@ -90,25 +85,18 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* d
       digitalWrite(33, HIGH);
 
 
-  bool debug = false;
 
   bool tail = false;
 
   // copy from ARTNET to ESP32 DMX Interface
    for (int i = 0; i < 512; i++)
   {
-
     datadmx[i] = (int)dataart[i];
   }
 
 
-
-
-
   if(debug)  {
-
-
-             Serial.print("DMX: Univ: ");
+      Serial.print("DMX: Univ: ");
       Serial.print(universe, DEC);
       Serial.print(", Seq: ");
       Serial.print(sequence, DEC);
@@ -131,19 +119,7 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* d
         Serial.println();
       
       
-        Serial.print("DMX: Output: ");
       
-      
-      // send out the buffer
-        for (int i = 0; i < length; i++)
-        {
-          Serial.print(datadmx[i]);
-          Serial.print(" ");
-        }
-        if (tail) {
-          Serial.print("...");
-        }
-  Serial.println();
 
   }
 
@@ -194,27 +170,10 @@ void setup()
   artnet.setArtDmxCallback(onDmxFrame);
   artnet.begin();
 
-
-
-
-
-
   dmx_set_pin(dmxPort, transmitPin, receivePin, enablePin);
-
-  /* Now we can install the DMX driver! We'll tell it which DMX port to use and
-    how big our DMX packet is expected to be. Typically, we'd pass it a handle
-    to a queue, but since we are only transmitting DMX, we don't need a queue.
-    We can write `NULL` where we'd normally put our queue handle. We'll also
-    pass some interrupt priority information. The interrupt priority can be set
-    to 1. */
   int queueSize = 0;
   int interruptPriority = 1;
-  dmx_driver_install(dmxPort, DMX_DEFAULT_INTR_FLAGS);
-
-
-
-datadmx[1]=255;
-  
+  dmx_driver_install(dmxPort, DMX_DEFAULT_INTR_FLAGS);  
 }
 
 void loop()
@@ -238,14 +197,27 @@ void loop()
 
 
 
-         dmx_write(dmxPort, datadmx, DMX_MAX_PACKET_SIZE);
-
+    dmx_write(dmxPort, datadmx, DMX_MAX_PACKET_SIZE);
+    if(debug) {
+       Serial.print("DMX: Output: ");
+      
+      
+      // send out the buffer
+        for (int i = 0; i < 16; i++)
+        {
+          Serial.print(datadmx[i]);
+          Serial.print(" ");
+        }
+      
+  Serial.println();
+    }
+       
     dmx_send(dmxPort, DMX_MAX_PACKET_SIZE);
 
-    Serial.println(datadmx[1]);
-         artnet.read();
 
-   // dmx_wait_send(dmxPort, DMX_PACKET_TIMEOUT_TICK);
+    artnet.read();
+
+  dmx_wait_sent(dmxPort, DMX_TIMEOUT_TICK);
       digitalWrite(33, LOW);
 
 

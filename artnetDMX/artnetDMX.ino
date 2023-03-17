@@ -1,8 +1,8 @@
 #include <ArtnetWifi.h>
 #include <Arduino.h>
 #include <esp_dmx.h>
-// Example, transmit all received ArtNet messages (DMX) out of the serial port in plain text.
 
+// Example, transmit all received ArtNet messages (DMX) out of the serial port in plain text.
 int transmitPin = 17;
 int receivePin = 16;
 int enablePin = 21;
@@ -11,9 +11,9 @@ byte datadmx[DMX_MAX_PACKET_SIZE];
 int packetCounter = 44;
 byte incrementValue = 0;
 
-//Wifi settings
-const char* ssid = "test";
-const char* password = "12345678";
+// Wifi settings
+const char *ssid = "*";
+const char *password = "*";
 
 WiFiUDP UdpSend;
 ArtnetWifi artnet;
@@ -27,36 +27,41 @@ bool ConnectWifi(void)
   WiFi.begin(ssid, password);
   Serial.println("");
   Serial.println("Connecting to WiFi");
-  
+
   // Wait for connection
   Serial.print("Connecting");
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
-    if (i > 20){
+    if (i > 20)
+    {
       state = false;
       break;
     }
     i++;
   }
-  if (state) {
+  if (state)
+  {
     Serial.println("");
     Serial.print("Connected to ");
     Serial.println(ssid);
     Serial.print("IP address: ");
     Serial.println(IPAddress(WiFi.localIP()));
-  } else {
+  }
+  else
+  {
     Serial.println("");
     Serial.println("Connection failed.");
   }
-  
+
   return state;
 }
 
-void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* dataart)
+void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t *dataart)
 {
   bool tail = false;
-  
+
   Serial.print("DMX: Univ: ");
   Serial.print(universe, DEC);
   Serial.print(", Seq: ");
@@ -64,15 +69,14 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* d
   Serial.print(", Data (");
   Serial.print(length, DEC);
   Serial.print("): ");
-       for (int i = 0; i < 512; i++)
+  for (int i = 0; i < 512; i++)
   {
 
     datadmx[i] = (int)dataart[i];
   }
 
-
-  
-  if (length > 16) {
+  if (length > 16)
+  {
     length = 16;
     tail = true;
   }
@@ -82,48 +86,35 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* d
     Serial.print(dataart[i], HEX);
     Serial.print(" ");
   }
-  if (tail) {
+  if (tail)
+  {
     Serial.print("...");
   }
   Serial.println();
 
-
   Serial.print("DMX: Output: ");
 
-
-// send out the buffer
+  // send out the buffer
   for (int i = 0; i < length; i++)
   {
     Serial.print(datadmx[i]);
     Serial.print(" ");
   }
-  if (tail) {
+  if (tail)
+  {
     Serial.print("...");
   }
   Serial.println();
 
-  
-
-    dmx_write_packet(dmxPort, datadmx, DMX_MAX_PACKET_SIZE);
-
-    dmx_send_packet(dmxPort, DMX_MAX_PACKET_SIZE);
-
+  dmx_write_packet(dmxPort, datadmx, DMX_MAX_PACKET_SIZE);
+  dmx_send_packet(dmxPort, DMX_MAX_PACKET_SIZE);
 
   /* We can do some other work here if we want! */
   // Do other work here...
 
-  
- 
   /* If we have no more work to do, we will wait until we are done sending our
     DMX packet. */
   dmx_wait_send_done(dmxPort, DMX_PACKET_TIMEOUT_TICK);
-
-
-
-
-
-
-  
 }
 
 void setup()
@@ -136,10 +127,10 @@ void setup()
   artnet.setArtDmxCallback(onDmxFrame);
   artnet.begin();
 
-  //DMXY SHIT
+  // DMXY SHIT
 
-/* Configure the DMX hardware to the default DMX settings and tell the DMX
-      driver which hardware pins we are using. */
+  /* Configure the DMX hardware to the default DMX settings and tell the DMX
+        driver which hardware pins we are using. */
   dmx_config_t dmxConfig = DMX_DEFAULT_CONFIG;
   dmx_param_config(dmxPort, &dmxConfig);
   dmx_set_pin(dmxPort, transmitPin, receivePin, enablePin);
@@ -160,18 +151,12 @@ void setup()
     to 0.*/
   dmx_set_mode(dmxPort, DMX_MODE_WRITE);
 
-datadmx[1]=255;
-  
+  datadmx[1] = 255;
 }
 
 void loop()
 {
   // we call the read function inside the loop
- 
 
-
- artnet.read();
-
-
-
+  artnet.read();
 }
