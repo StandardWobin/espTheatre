@@ -108,12 +108,6 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t *d
 
   dmx_write_packet(dmxPort, datadmx, DMX_MAX_PACKET_SIZE);
   dmx_send_packet(dmxPort, DMX_MAX_PACKET_SIZE);
-
-  /* We can do some other work here if we want! */
-  // Do other work here...
-
-  /* If we have no more work to do, we will wait until we are done sending our
-    DMX packet. */
   dmx_wait_send_done(dmxPort, DMX_PACKET_TIMEOUT_TICK);
 }
 
@@ -123,32 +117,19 @@ void setup()
   Serial.begin(115200);
   ConnectWifi();
 
-  // this will be called for each packet received
   artnet.setArtDmxCallback(onDmxFrame);
   artnet.begin();
 
-  // DMXY SHIT
 
-  /* Configure the DMX hardware to the default DMX settings and tell the DMX
-        driver which hardware pins we are using. */
   dmx_config_t dmxConfig = DMX_DEFAULT_CONFIG;
   dmx_param_config(dmxPort, &dmxConfig);
   dmx_set_pin(dmxPort, transmitPin, receivePin, enablePin);
 
-  /* Now we can install the DMX driver! We'll tell it which DMX port to use and
-    how big our DMX packet is expected to be. Typically, we'd pass it a handle
-    to a queue, but since we are only transmitting DMX, we don't need a queue.
-    We can write `NULL` where we'd normally put our queue handle. We'll also
-    pass some interrupt priority information. The interrupt priority can be set
-    to 1. */
   int queueSize = 0;
   int interruptPriority = 1;
   dmx_driver_install(dmxPort, DMX_MAX_PACKET_SIZE, queueSize, NULL,
                      interruptPriority);
 
-  /* Finally, since we are transmitting DMX, we should tell the DMX driver that
-    we are transmitting, not receiving. We should also set our DMX start code
-    to 0.*/
   dmx_set_mode(dmxPort, DMX_MODE_WRITE);
 
   datadmx[1] = 255;
@@ -156,7 +137,5 @@ void setup()
 
 void loop()
 {
-  // we call the read function inside the loop
-
   artnet.read();
 }
