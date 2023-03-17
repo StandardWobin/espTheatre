@@ -22,11 +22,14 @@ The artnetDMX folder contains the code for controlling DMX devices using ESP32 m
 The artnetSBUS folder contains the code for controlling Ronin Gimble devices using ESP32 microcontroller and SBUS protocol. The code receives ArtNet packets containing control values for the Gimble and sends the corresponding signals to the Gimble using the SBUS protocol.
 
 ## Usage
+ * Upload the code to the microcontroller using the Arduino or ESP32 IDE.
+ * Connect the microcontroller to the corresponding device (Ardafreit for LED, DMX interface for DMX, and Ronin Gimble for SBUS).
+ * Connect the microcontroller to the network and ensure that it is receiving ArtNet packets.
+ * Control the devices by sending ArtNet packets containing the corresponding control values.
 
-    Upload the code to the microcontroller using the Arduino or ESP32 IDE.
-    Connect the microcontroller to the corresponding device (Ardafreit for LED, DMX interface for DMX, and Ronin Gimble for SBUS).
-    Connect the microcontroller to the network and ensure that it is receiving ArtNet packets.
-    Control the devices by sending ArtNet packets containing the corresponding control values.
+## Example 
+![example](/docs/helmet.png)
+
 
 ## Contributing
 
