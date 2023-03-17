@@ -16,8 +16,8 @@ int packetCounter = 44;
 byte incrementValue = 0;
 
 
-const char* ssid = "haensse.dev";
-const char* password = "bitteddosdasnicht420";
+const char* ssid = "*";
+const char* password = "*";
 
 
 
