@@ -7,7 +7,7 @@ This repository contains the codes for controlling LED, DMX, and SBUS devices us
 * Artnet: https://github.com/rstephan/ArtnetWifi
 * Adafruit: https://github.com/adafruit/Adafruit_NeoPixel
 * esp_dmx: https://github.com/someweisguy/esp_dmx
-* sbusb: https://github.com/bolderflight/sbus
+* sbus: https://github.com/bolderflight/sbus
 
 ## LED Control via Ardafruit
 
